@@ -1,22 +1,11 @@
 <?php
 
-require_once "../../app/Services/AbonnementService.php";
+require_once "../../app/Controllers/SalleController.php";
 
-try {
+$controller = new SalleController();
 
-    $service = new AbonnementService();
+echo "<pre>";
 
-    $service->createAbonnement(
-        "Mensuel",
-        "2026-07-01",
-        "2026-07-31",
-        1
-    );
+print_r($controller->index());
 
-    echo "Abonnement ajouté avec succès";
-
-} catch (Exception $e) {
-
-    echo $e->getMessage();
-
-}
+echo "</pre>";

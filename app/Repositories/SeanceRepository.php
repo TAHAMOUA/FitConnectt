@@ -10,28 +10,47 @@ class SeanceRepository {
     }
 
 //GET all seance
-    public function findAll(){
+   public function findAll()
+{
+    $sql = "SELECT
+                seance.*,
+                adherent.nom,
+                adherent.prenom,
+                salle.nom_salle
+            FROM seance
+            INNER JOIN adherent
+                ON seance.id_adherent = adherent.id_adherent
+            INNER JOIN salle
+                ON seance.id_salle = salle.id_salle";
 
-        $sql = "SELECT * FROM seance";
+    $stmt = $this->conn->prepare($sql);
 
-        $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
 
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     //GEt seance by id
-    public function findById($id){
-
-    $sql = "SELECT * FROM seance WHERE id_seance =?";
+  public function findById($id)
+{
+    $sql = "SELECT
+                seance.*,
+                adherent.nom,
+                adherent.prenom,
+                salle.nom_salle
+            FROM seance
+            INNER JOIN adherent
+                ON seance.id_adherent = adherent.id_adherent
+            INNER JOIN salle
+                ON seance.id_salle = salle.id_salle
+            WHERE seance.id_seance = ?";
 
     $stmt = $this->conn->prepare($sql);
 
     $stmt->execute([$id]);
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+}
 
     //Creat seance
     public function create($dateseance,$typeactivite,$duree,$equipement,$idadherent,$idsalle){
@@ -81,8 +100,20 @@ class SeanceRepository {
     $stmt->execute([$idAdherent]);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     }
+    // Check if the member has sessions
+    public function hasSeances($idAdherent)
+    {
+    $sql = "SELECT COUNT(*)
+            FROM seance
+            WHERE id_adherent = ?";
+
+    $stmt = $this->conn->prepare($sql);
+
+    $stmt->execute([$idAdherent]);
+
+    return $stmt->fetchColumn() > 0;
+}
 }
 
 

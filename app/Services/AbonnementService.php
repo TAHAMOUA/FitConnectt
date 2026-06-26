@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '../../Repositories/AbonnementRepository.php';
+require_once __DIR__ . '/../Repositories/AbonnementRepository.php';
 
 class AbonnementService
 {

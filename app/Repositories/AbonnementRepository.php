@@ -12,27 +12,40 @@ class AbonnementRepository
         $this->conn = $database->connect();
     }
 
-    // Get all subscriptions
-    public function findAll()
-    {
-        $sql = "SELECT * FROM abonnement";
+   public function findAll()
+{
+    $sql = "SELECT
+                abonnement.*,
+                adherent.nom,
+                adherent.prenom
+            FROM abonnement
+            INNER JOIN adherent
+            ON abonnement.id_adherent = adherent.id_adherent";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
+    $stmt = $this->conn->prepare($sql);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $stmt->execute();
 
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
     // Get subscription by id
-    public function findById($id)
-    {
-        $sql = "SELECT * FROM abonnement WHERE id_abonnement = ?";
+   public function findById($id)
+{
+    $sql = "SELECT
+                abonnement.*,
+                adherent.nom,
+                adherent.prenom
+            FROM abonnement
+            INNER JOIN adherent
+            ON abonnement.id_adherent = adherent.id_adherent
+            WHERE id_abonnement = ?";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);
+    $stmt = $this->conn->prepare($sql);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    $stmt->execute([$id]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
     // Create subscription
     public function create($type, $dateDebut, $dateFin, $idAdherent)
@@ -91,4 +104,18 @@ class AbonnementRepository
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    // Check if the member has subscriptions
+    public function hasSubscriptions($idAdherent)
+    {
+    $sql = "SELECT COUNT(*) 
+            FROM abonnement
+            WHERE id_adherent = ?";
+
+    $stmt = $this->conn->prepare($sql);
+
+    $stmt->execute([$idAdherent]);
+
+    return $stmt->fetchColumn() > 0;
+    }
+
 }

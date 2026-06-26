@@ -13,28 +13,41 @@ class AdherentRepository
     }
 
     // Get all members
-    public function findAll()
-    {
-        $sql = "SELECT * FROM adherent";
+    
+public function findAll()
+{
+    $sql = "SELECT
+                adherent.*,
+                salle.nom_salle
+            FROM adherent
+            INNER JOIN salle
+            ON adherent.id_salle = salle.id_salle";
 
-        $stmt = $this->conn->prepare($sql);
+    $stmt = $this->conn->prepare($sql);
 
-        $stmt->execute();
+    $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     // Get member by id
-    public function findById($id)
-    {
-        $sql = "SELECT * FROM adherent WHERE id_adherent = ?";
+    
+public function findById($id)
+{
+    $sql = "SELECT
+                adherent.*,
+                salle.nom_salle
+            FROM adherent
+            INNER JOIN salle
+            ON adherent.id_salle = salle.id_salle
+            WHERE id_adherent = ?";
 
-        $stmt = $this->conn->prepare($sql);
+    $stmt = $this->conn->prepare($sql);
 
-        $stmt->execute([$id]);
+    $stmt->execute([$id]);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
     // Create member
     public function create($nom, $prenom, $email, $telephone, $dateInscription, $idSalle)
@@ -82,4 +95,14 @@ class AdherentRepository
 
         return $stmt->execute([$id]);
     }
+    public function hasSubscriptions($idAdherent)
+{
+    $sql = "SELECT COUNT(*) FROM abonnement
+            WHERE id_adherent = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute([$idAdherent]);
+
+    return $stmt->fetchColumn() > 0;
+}
 } 
