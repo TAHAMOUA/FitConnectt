@@ -1,5 +1,5 @@
 <footer class="footer">
-    <p>&copy; <?php echo date("Y"); ?> FitConnect - DevAcademy Project</p>
+    <p>&copy; <?php echo date("Y"); ?> FitConnect </p>
 </footer>
 
 </body>
